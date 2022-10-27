@@ -26,6 +26,8 @@ def task3():
     
 
 def task4(generator):
+    a = generator
+    a = list(filter(lambda x: "sus" not in x, a))
     
 
 def task5(list_of_smth):
