@@ -1,6 +1,6 @@
 import pygame
 import math
-from pygame.draw import *
+from pygame.draw import circle
 from random import randint
 pygame.init()
 
