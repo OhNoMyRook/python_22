@@ -86,7 +86,7 @@ def some_balls():
     bomb()
 
 def draw_text(surf, text, size, x, y):
-    '''Пишет желаемый текст на экране в (x,y) размера size'''
+    '''Пишет желаемый текст размера size на экране в (x,y)'''
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, BLACK)
     text_rect = text_surface.get_rect()
