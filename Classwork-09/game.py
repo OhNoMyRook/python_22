@@ -38,7 +38,13 @@ s = 0
 
 font_name = pygame.font.match_font('arial')
 
+def theme():
+    '''Добавляет фон'''
+    screen.fill(BLACK)
+    screen.blit(background, background_rect)
+
 def new_ball_1():
+    '''Спавнит 1ый шарик случайного радиуса в произвольном месте'''
     global x, y, r
     x = randint(r_max,WIDTH - r_max)
     y = randint(r_max,HEIGTH - r_max)
@@ -47,6 +53,7 @@ def new_ball_1():
     circle(screen, color, (x, y), r)
 
 def new_ball_2():
+    '''Спавнит 2ый шарик случайного радиуса в произвольном месте'''
     global x_1, y_1, r_1
     x_1 = randint(r_max,WIDTH - r_max)
     y_1 = randint(r_max,HEIGTH - r_max)
@@ -55,6 +62,7 @@ def new_ball_2():
     circle(screen, color, (x_1, y_1), r_1)
 
 def new_ball_3():
+    '''Спавнит 3ый шарик случайного радиуса в произвольном месте'''
     global x_2, y_2, r_2
     x_2 = randint(r_max,WIDTH - r_max)
     y_2 = randint(r_max,HEIGTH - r_max)
@@ -63,6 +71,7 @@ def new_ball_3():
     circle(screen, color, (x_2, y_2), r_2)
 
 def bomb():
+    '''Спавнит черный шар-бомбу, за попадание в которую снимается 3 очка'''
     global x_0, y_0, r_0
     x_0 = randint(r_max,WIDTH - r_max)
     y_0 = randint(r_max,HEIGTH - r_max)
@@ -70,22 +79,41 @@ def bomb():
     circle(screen, BLACK, (x_0, y_0), r_0)
 
 def some_balls():
+    '''Спавнит три шара и одну бомбу сразу'''
     new_ball_1()
     new_ball_2()
     new_ball_3()
+    bomb()
 
 def draw_text(surf, text, size, x, y):
+    '''Пишет желаемый текст на экране в (x,y) размера size'''
     font = pygame.font.Font(font_name, size)
     text_surface = font.render(text, True, BLACK)
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
     surf.blit(text_surface, text_rect)
 
+def hit():
+    '''Добавляет балл при попадании в шар'''
+    if (math.sqrt(((event.pos[0])-x)**2 + ((event.pos[1])-y)**2)) <= r or (math.sqrt(((event.pos[0])-x_1)**2 + ((event.pos[1])-y_1)**2)) <= r_1 or (math.sqrt(((event.pos[0])-x_2)**2 + ((event.pos[1])-y_2)**2)) <= r_2:
+        return (1)
+    else:
+        return (0)
+
+def boom():
+    '''Снимает 3(три) балла при попадании в бомбу'''
+    if (math.sqrt(((event.pos[0])-x_0)**2 + ((event.pos[1])-y_0)**2)) <= r_0:
+        return (-3)
+    else:
+        return (0)
+
 def points():
+    '''Отображает очки'''
     draw_text(screen, "Очки : ", 60, 550, 40)  
     draw_text(screen, str(s), 60, 650, 40)
 
 def show_go_screen():
+    '''Начальный экран, экран по окончании одной игровой сессии с опцией возобновления игры с отображением итоговых очков'''
     screen.fill(BLACK)
     screen.blit(background, background_rect)
     draw_text(screen, "Количество очков: ", 40, 590, 400)
@@ -101,8 +129,7 @@ def show_go_screen():
             if event.type == pygame.KEYUP:
                 waiting = False
                 pygame.display.flip()
-                screen.fill(BLACK)
-                screen.blit(background, background_rect)
+                theme()
                     
 running = True
 game_over = True
@@ -114,10 +141,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if (math.sqrt(((event.pos[0])-x)**2 + ((event.pos[1])-y)**2)) <= r or (math.sqrt(((event.pos[0])-x_1)**2 + ((event.pos[1])-y_1)**2)) <= r_1 or (math.sqrt(((event.pos[0])-x_2)**2 + ((event.pos[1])-y_2)**2)) <= r_2:
-                s+=1
-            elif (math.sqrt(((event.pos[0])-x_0)**2 + ((event.pos[1])-y_0)**2)) <= r_0:
-                s=s-3
+                s=s+hit()
+                s=s+boom()
     points()    
     if (current_time - start_time) >= stop_after:
         game_over = True
@@ -127,7 +152,7 @@ while running:
         s = 0
         start_time = current_time 
     some_balls()
-    bomb()
+    theme()
     pygame.display.update()
-    screen.fill(BLACK)
-    screen.blit(background, background_rect)
+    
+    
