@@ -2,8 +2,11 @@ import pygame
 import math
 from pygame.draw import circle
 from random import randint
+from os import path
+
 pygame.init()
 pygame.font.init()
+pygame.mixer.init()
 
 WIDTH = 1200
 HEIGTH = 900
@@ -13,6 +16,9 @@ FPS = 2
 screen = pygame.display.set_mode((WIDTH, HEIGTH))
 pygame.display.set_caption("Catch the ball")
 clock = pygame.time.Clock()
+
+background = pygame.image.load(path.join('background.png')).convert()
+background_rect = background.get_rect()
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -56,6 +62,13 @@ def new_ball_3():
     color = COLORS[randint(0, 5)]
     circle(screen, color, (x_2, y_2), r_2)
 
+def bomb():
+    global x_0, y_0, r_0
+    x_0 = randint(r_max,WIDTH - r_max)
+    y_0 = randint(r_max,HEIGTH - r_max)
+    r_0 = randint(r_min,r_max)
+    circle(screen, BLACK, (x_0, y_0), r_0)
+
 def some_balls():
     new_ball_1()
     new_ball_2()
@@ -63,7 +76,7 @@ def some_balls():
 
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, WHITE)
+    text_surface = font.render(text, True, BLACK)
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
     surf.blit(text_surface, text_rect)
@@ -73,7 +86,8 @@ def points():
     draw_text(screen, str(s), 60, 650, 40)
 
 def show_go_screen():
-    screen.fill(BLUE)
+    screen.fill(BLACK)
+    screen.blit(background, background_rect)
     draw_text(screen, "Количество очков: ", 40, 590, 400)
     draw_text(screen, str(s), 40, 750, 400)
     draw_text(screen, "Press any key to play", 30, 600, 600)
@@ -88,6 +102,7 @@ def show_go_screen():
                 waiting = False
                 pygame.display.flip()
                 screen.fill(BLACK)
+                screen.blit(background, background_rect)
                     
 running = True
 game_over = True
@@ -101,6 +116,8 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if (math.sqrt(((event.pos[0])-x)**2 + ((event.pos[1])-y)**2)) <= r or (math.sqrt(((event.pos[0])-x_1)**2 + ((event.pos[1])-y_1)**2)) <= r_1 or (math.sqrt(((event.pos[0])-x_2)**2 + ((event.pos[1])-y_2)**2)) <= r_2:
                 s+=1
+            elif (math.sqrt(((event.pos[0])-x_0)**2 + ((event.pos[1])-y_0)**2)) <= r_0:
+                s=s-3
     points()    
     if (current_time - start_time) >= stop_after:
         game_over = True
@@ -110,5 +127,7 @@ while running:
         s = 0
         start_time = current_time 
     some_balls()
+    bomb()
     pygame.display.update()
     screen.fill(BLACK)
+    screen.blit(background, background_rect)
