@@ -6,7 +6,6 @@ from os import path
 
 pygame.init()
 pygame.font.init()
-pygame.mixer.init()
 
 WIDTH = 1200
 HEIGTH = 900
@@ -114,8 +113,7 @@ def points():
 
 def show_go_screen():
     '''Начальный экран, экран по окончании одной игровой сессии с опцией возобновления игры с отображением итоговых очков'''
-    screen.fill(BLACK)
-    screen.blit(background, background_rect)
+    theme()
     draw_text(screen, "Количество очков: ", 40, 590, 400)
     draw_text(screen, str(s), 40, 750, 400)
     draw_text(screen, "Press any key to play", 30, 600, 600)
@@ -134,6 +132,8 @@ def show_go_screen():
 running = True
 game_over = True
 
+
+
 while running:
     clock.tick(FPS)
     current_time = pygame.time.get_ticks()  
@@ -142,8 +142,8 @@ while running:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
                 s=s+hit()
-                s=s+boom()
-    points()    
+                s=s+boom()  
+    points() 
     if (current_time - start_time) >= stop_after:
         game_over = True
     if game_over:    
@@ -152,7 +152,5 @@ while running:
         s = 0
         start_time = current_time 
     some_balls()
-    theme()
     pygame.display.update()
-    
-    
+    theme()
