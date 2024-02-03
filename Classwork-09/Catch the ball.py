@@ -182,3 +182,4 @@ while running:
         bomb.move(FPS)
     pygame.display.update()
     theme()
+    
